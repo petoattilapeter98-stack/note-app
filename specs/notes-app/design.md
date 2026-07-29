@@ -5,7 +5,7 @@ Implements: [requirements.md](./requirements.md)
 ## Stack
 - **Build tool:** Vite
 - **Language:** TypeScript
-- **UI:** React 18
+- **UI:** React 19
 - **Persistence:** browser `localStorage`
 - **Testing:** Vitest + React Testing Library
 - **Styling:** plain CSS (CSS modules), no UI framework — v1 scope doesn't
