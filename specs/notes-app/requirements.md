@@ -31,6 +31,9 @@ These may become future iterations but are explicitly excluded from this spec.
 - THE SYSTEM SHALL display all notes in a list/sidebar, showing at minimum
   title and last-modified date.
 - THE SYSTEM SHALL order notes by last-modified date, most recent first.
+- WHERE notes are pinned (see FR8), THE SYSTEM SHALL order all pinned notes
+  above all unpinned notes, applying the last-modified ordering within each
+  group.
 - IF a note has no title, THEN THE SYSTEM SHALL display a placeholder
   (e.g. "Untitled note") in the list.
 
@@ -52,6 +55,19 @@ These may become future iterations but are explicitly excluded from this spec.
 - THE SYSTEM SHALL persist all notes in the browser's localStorage.
 - WHEN the app is reloaded, THE SYSTEM SHALL restore all previously saved
   notes.
+
+### FR8 — Pin a note (added v1.1)
+- WHEN the user pins a note, THE SYSTEM SHALL mark that note as pinned and
+  move it above all unpinned notes in the list (see FR3).
+- WHEN the user unpins a pinned note, THE SYSTEM SHALL return it to the
+  normal last-modified ordering.
+- THE SYSTEM SHALL persist the pinned state alongside the note (FR7), so it
+  survives a reload.
+- Pinning or unpinning a note SHALL NOT change its "last modified" timestamp,
+  because it is not an edit to the note's content.
+- THE SYSTEM SHALL visually indicate which notes in the list are pinned.
+- IF a stored note predates this feature and has no pinned value, THEN THE
+  SYSTEM SHALL treat it as unpinned.
 
 ## Non-Functional Requirements
 
@@ -76,3 +92,10 @@ These may become future iterations but are explicitly excluded from this spec.
 3. Deleting a note requires confirmation and cannot be undone accidentally.
 4. Empty state is shown when there are zero notes.
 5. App has automated tests covering the above behaviors.
+
+## Acceptance Criteria (v1.1 "done")
+6. User can pin and unpin a note, and pinned notes appear above unpinned ones.
+7. Pinned state survives a full page reload.
+8. Pinning does not change a note's last-modified timestamp or its position
+   relative to other pinned notes.
+9. Notes saved before v1.1 still load correctly and appear unpinned.

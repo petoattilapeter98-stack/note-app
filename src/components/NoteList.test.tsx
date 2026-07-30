@@ -53,6 +53,109 @@ describe('NoteList', () => {
     expect(screen.getByText('Untitled note')).toBeInTheDocument()
   })
 
+  it('sorts pinned notes above unpinned ones regardless of update time', () => {
+    const recentUnpinned = makeNote({
+      id: '1',
+      title: 'Recent',
+      updatedAt: '2026-01-05T00:00:00.000Z',
+    })
+    const stalePinned = makeNote({
+      id: '2',
+      title: 'Stale pinned',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+      pinned: true,
+    })
+
+    render(
+      <NoteList
+        notes={[recentUnpinned, stalePinned]}
+        selectedNoteId={null}
+        onSelect={vi.fn()}
+        onCreate={vi.fn()}
+      />,
+    )
+
+    const items = screen.getAllByRole('button', { name: /Recent|Stale pinned/ })
+    expect(items[0]).toHaveTextContent('Stale pinned')
+    expect(items[1]).toHaveTextContent('Recent')
+  })
+
+  it('sorts by updatedAt within the pinned group', () => {
+    const olderPinned = makeNote({
+      id: '1',
+      title: 'Older pinned',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+      pinned: true,
+    })
+    const newerPinned = makeNote({
+      id: '2',
+      title: 'Newer pinned',
+      updatedAt: '2026-01-02T00:00:00.000Z',
+      pinned: true,
+    })
+
+    render(
+      <NoteList
+        notes={[olderPinned, newerPinned]}
+        selectedNoteId={null}
+        onSelect={vi.fn()}
+        onCreate={vi.fn()}
+      />,
+    )
+
+    const items = screen.getAllByRole('button', { name: /pinned/ })
+    expect(items[0]).toHaveTextContent('Newer pinned')
+    expect(items[1]).toHaveTextContent('Older pinned')
+  })
+
+  it('marks pinned notes with an indicator and leaves unpinned ones unmarked', () => {
+    const { rerender } = render(
+      <NoteList
+        notes={[makeNote({ pinned: true })]}
+        selectedNoteId={null}
+        onSelect={vi.fn()}
+        onCreate={vi.fn()}
+      />,
+    )
+    expect(screen.getByRole('img', { name: 'Pinned' })).toBeInTheDocument()
+
+    rerender(
+      <NoteList
+        notes={[makeNote({ pinned: false })]}
+        selectedNoteId={null}
+        onSelect={vi.fn()}
+        onCreate={vi.fn()}
+      />,
+    )
+    expect(screen.queryByRole('img', { name: 'Pinned' })).not.toBeInTheDocument()
+  })
+
+  it('treats a note with no pinned field as unpinned', () => {
+    // Notes saved before the pin feature existed have no `pinned` key at all.
+    const legacyNote = makeNote({ id: '1', title: 'Legacy', updatedAt: '2026-01-05T00:00:00.000Z' })
+    delete (legacyNote as { pinned?: boolean }).pinned
+    const pinned = makeNote({
+      id: '2',
+      title: 'Pinned',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+      pinned: true,
+    })
+
+    render(
+      <NoteList
+        notes={[legacyNote, pinned]}
+        selectedNoteId={null}
+        onSelect={vi.fn()}
+        onCreate={vi.fn()}
+      />,
+    )
+
+    const items = screen.getAllByRole('button', { name: /Legacy|Pinned/ })
+    expect(items[0]).toHaveTextContent('Pinned')
+    expect(items[1]).toHaveTextContent('Legacy')
+    expect(screen.getAllByRole('img', { name: 'Pinned' })).toHaveLength(1)
+  })
+
   it('calls onSelect when a note is clicked', async () => {
     const onSelect = vi.fn()
     render(

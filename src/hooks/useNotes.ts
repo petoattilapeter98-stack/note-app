@@ -36,5 +36,13 @@ export function useNotes() {
     setNotes((prev) => prev.filter((note) => note.id !== id))
   }
 
-  return { notes, createNote, updateNote, deleteNote }
+  // Deliberately leaves updatedAt alone: pinning changes how a note is
+  // presented, not its content.
+  function togglePin(id: string): void {
+    setNotes((prev) =>
+      prev.map((note) => (note.id === id ? { ...note, pinned: !note.pinned } : note)),
+    )
+  }
+
+  return { notes, createNote, updateNote, deleteNote, togglePin }
 }

@@ -10,9 +10,12 @@ interface NoteListProps {
 }
 
 export function NoteList({ notes, selectedNoteId, onSelect, onCreate }: NoteListProps) {
-  const sorted = [...notes].sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-  )
+  // Pinned notes first, then most recently updated within each group.
+  const sorted = [...notes].sort((a, b) => {
+    const pinDelta = Number(b.pinned ?? false) - Number(a.pinned ?? false)
+    if (pinDelta !== 0) return pinDelta
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  })
 
   return (
     <div className="note-list">

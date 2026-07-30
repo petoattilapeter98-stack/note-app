@@ -80,4 +80,79 @@ describe('useNotes', () => {
 
     expect(loadNotes()).toHaveLength(1)
   })
+
+  describe('togglePin', () => {
+    it('pins an unpinned note and unpins it again', () => {
+      const { result } = renderHook(() => useNotes())
+
+      let created!: ReturnType<typeof result.current.createNote>
+      act(() => {
+        created = result.current.createNote()
+      })
+      expect(result.current.notes[0].pinned).toBeFalsy()
+
+      act(() => {
+        result.current.togglePin(created.id)
+      })
+      expect(result.current.notes[0].pinned).toBe(true)
+
+      act(() => {
+        result.current.togglePin(created.id)
+      })
+      expect(result.current.notes[0].pinned).toBe(false)
+    })
+
+    it('does not change updatedAt', async () => {
+      const { result } = renderHook(() => useNotes())
+
+      let created!: ReturnType<typeof result.current.createNote>
+      act(() => {
+        created = result.current.createNote()
+      })
+
+      await new Promise((resolve) => setTimeout(resolve, 5))
+
+      act(() => {
+        result.current.togglePin(created.id)
+      })
+
+      expect(result.current.notes[0].updatedAt).toBe(created.updatedAt)
+    })
+
+    it('persists the pinned state', () => {
+      const { result } = renderHook(() => useNotes())
+
+      let created!: ReturnType<typeof result.current.createNote>
+      act(() => {
+        created = result.current.createNote()
+      })
+      act(() => {
+        result.current.togglePin(created.id)
+      })
+
+      expect(loadNotes()[0].pinned).toBe(true)
+
+      const { result: reloaded } = renderHook(() => useNotes())
+      expect(reloaded.current.notes[0].pinned).toBe(true)
+    })
+
+    it('leaves other notes untouched', () => {
+      const { result } = renderHook(() => useNotes())
+
+      let first!: ReturnType<typeof result.current.createNote>
+      act(() => {
+        first = result.current.createNote()
+      })
+      act(() => {
+        result.current.createNote()
+      })
+
+      act(() => {
+        result.current.togglePin(first.id)
+      })
+
+      const other = result.current.notes.find((note) => note.id !== first.id)!
+      expect(other.pinned).toBeFalsy()
+    })
+  })
 })

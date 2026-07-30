@@ -31,12 +31,19 @@ drift apart.
 - **State:** lifted to `App` (`src/components/App.tsx`), exposed via the
   `useNotes()` hook (`src/hooks/useNotes.ts`) — no external state library.
 - **Data model:** a `Note` has `id`, `title`, `body`, `createdAt`,
-  `updatedAt` (`src/types.ts`).
+  `updatedAt`, and optional `pinned` (`src/types.ts`). `pinned` is optional
+  on purpose — notes stored before the field existed read as unpinned, so
+  there is no migration step. Keep it that way.
 - **Autosave:** `NoteEditor` debounces edits (~300ms) into
   `useNotes().updateNote`, and flushes immediately on blur or when the
   selected note changes/unmounts, so tab close doesn't drop keystrokes.
-- **Sorting:** `NoteList` derives sort order from `updatedAt` at render
-  time; storage/hook state stays insertion-ordered.
+- **Sorting:** `NoteList` derives sort order at render time (pinned notes
+  first, then `updatedAt` descending within each group); storage/hook state
+  stays insertion-ordered.
+- **Pinning:** `useNotes().togglePin` deliberately does not touch
+  `updatedAt` — pinning is presentational, not an edit. The Pin/Unpin
+  control lives in the `NoteEditor` toolbar rather than on the list row,
+  because the row is itself a `<button>` and can't nest one.
 - **Selection is not persisted** — `selectedNoteId` lives only in `App`'s
   React state, so it resets to `null` on reload (notes themselves persist).
 

@@ -16,7 +16,14 @@ export function NoteListItem({ note, selected, onSelect }: NoteListItemProps) {
         aria-current={selected}
         onClick={() => onSelect(note.id)}
       >
-        <span className="note-list-item__title">{note.title.trim() || 'Untitled note'}</span>
+        <span className="note-list-item__title">
+          {note.pinned && (
+            <span className="note-list-item__pin" role="img" aria-label="Pinned">
+              📌
+            </span>
+          )}
+          {note.title.trim() || 'Untitled note'}
+        </span>
         <span className="note-list-item__timestamp">{formatRelativeTime(note.updatedAt)}</span>
       </button>
     </li>

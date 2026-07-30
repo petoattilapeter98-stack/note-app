@@ -5,11 +5,12 @@ interface NoteEditorProps {
   note: Note
   onUpdate: (id: string, changes: { title: string; body: string }) => void
   onDelete: (id: string) => void
+  onTogglePin: (id: string) => void
 }
 
 const AUTOSAVE_DELAY_MS = 300
 
-export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
+export function NoteEditor({ note, onUpdate, onDelete, onTogglePin }: NoteEditorProps) {
   const [title, setTitle] = useState(note.title)
   const [body, setBody] = useState(note.body)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -78,6 +79,14 @@ export function NoteEditor({ note, onUpdate, onDelete }: NoteEditorProps) {
   return (
     <div className="note-editor">
       <div className="note-editor__toolbar">
+        <button
+          type="button"
+          className={`note-editor__pin${note.pinned ? ' note-editor__pin--active' : ''}`}
+          aria-pressed={Boolean(note.pinned)}
+          onClick={() => onTogglePin(note.id)}
+        >
+          {note.pinned ? 'Unpin' : 'Pin'}
+        </button>
         <button type="button" className="note-editor__delete" onClick={handleDelete}>
           Delete
         </button>

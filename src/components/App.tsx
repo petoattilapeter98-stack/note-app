@@ -5,7 +5,7 @@ import { NoteEditor } from './NoteEditor'
 import { NoteList } from './NoteList'
 
 export function App() {
-  const { notes, createNote, updateNote, deleteNote } = useNotes()
+  const { notes, createNote, updateNote, deleteNote, togglePin } = useNotes()
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
 
   const selectedNote = notes.find((note) => note.id === selectedNoteId) ?? null
@@ -30,7 +30,12 @@ export function App() {
       />
       <main className="app__editor-pane">
         {selectedNote ? (
-          <NoteEditor note={selectedNote} onUpdate={updateNote} onDelete={handleDelete} />
+          <NoteEditor
+            note={selectedNote}
+            onUpdate={updateNote}
+            onDelete={handleDelete}
+            onTogglePin={togglePin}
+          />
         ) : (
           <EmptyState
             title="No note selected"

@@ -26,6 +26,21 @@ Check off as completed.
 - [x] 11. Full pass against Acceptance Criteria in requirements.md; fix any
       gaps.
 
+## v1.1 — Pin notes (FR8)
+
+- [x] 12. Add optional `pinned?: boolean` to the `Note` type.
+- [x] 13. `useNotes.togglePin(id)` — flips `pinned`, persists, leaves
+      `updatedAt` untouched, + tests.
+- [x] 14. `NoteList` — two-level sort (pinned first, then `updatedAt` desc);
+      `NoteListItem` shows a pinned indicator, + tests (including a note
+      with no `pinned` field sorting as unpinned).
+- [x] 15. `NoteEditor` — Pin/Unpin toggle in the toolbar next to Delete,
+      + tests.
+- [x] 16. Wire `togglePin` from `useNotes` through `App` into `NoteEditor`.
+- [x] 17. Styling for the pinned indicator and toggle, light + dark mode.
+- [x] 18. Pass against v1.1 Acceptance Criteria in requirements.md; verify
+      pre-v1.1 stored notes still load and render as unpinned.
+
 ## Explicitly deferred (not v1)
 - Tags/folders/search
 - Markdown rendering
