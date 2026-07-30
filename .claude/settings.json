@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "ask": [
+      "Edit(specs/**)",
+      "Write(specs/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // \"\"' | grep -q 'specs/' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"This shell command references specs/ — spec files are the base of development and need your review before any change.\"}}' || true",
+            "statusMessage": "Checking for spec changes..."
+          }
+        ]
+      }
+    ]
+  }
+}

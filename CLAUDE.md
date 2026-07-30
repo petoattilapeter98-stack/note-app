@@ -21,6 +21,13 @@ requirements.md and follow design.md. If a requested change conflicts with
 either doc, update the spec first, then implement — don't let code and spec
 drift apart.
 
+**Spec changes require the user's explicit approval.** `.claude/settings.json`
+enforces this: edits under `specs/` prompt for review, as do shell commands
+that reference `specs/`. This is deliberate, not an obstacle to route around —
+never work around it by moving a file, writing outside the directory and
+copying in, or renaming paths to dodge the pattern. Propose the spec change,
+let the user approve it, then implement.
+
 ## Architecture (see design.md for full detail)
 
 - **Stack:** Vite + React 19 + TypeScript, no backend.
